@@ -31,6 +31,17 @@ bool int_cmp(int i1, int i2) {
 2. When an operation is performed on the data, the operator is overloaded to translate the operation into a boolean circuit and then call the corresponding functions in `CircuitExecution`.
 3. When the reveal function is called, it will be redirected to `ProtocolExecution::reveal()` and output the actual value.
 
+## Circuit file generation
+
+By default, EMP-toolkit does not generate the circuit file (which describes how the boolean gates are connected and the types of each gate), since it computes everything on the fly. However, it does provide special implementations of `ProtocolExecution` and `CircuitExecution` though the `setup_plain_prot()` function to generate the circuit file:
+
+```c++
+using namespace emp;
+
+setup_plain_prot(true, "circuit.txt");
+int_cmp();
+finalize_plain_prot();
+```
 
 ## Links
 
