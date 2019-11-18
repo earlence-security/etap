@@ -4,7 +4,7 @@ Once the EMP-toolkit library is imported, the program will automatically include
 
 - `ProtocolExecution * prot_exec`: It encodes bits into labels (which are represented though the `block` type) and decodes labels into bits. It may also include an `IO` variable, which is used to transfer labels and initiate oblivious transfer when necessary.
 - `CircuitExecution * circ_exec`: It contains functions that take the input labels and produce the output label for each type of boolean gate. Depends on the role of the program, the purpose of the function will vary:
-  - If the program is a **generator** (ALICE), it will generate the table for this gate and sends the table through an `IO`. In the case, the output label will be defaulted to be the "0" label.
+  - If the program is a **generator** (ALICE), it will generate the table for this gate and send the table through an `IO`. In the case, the output label will be defaulted to be the "0" label.
   - If the program is a **evaluator** (BOB), it will receive the table through an `IO` and evaluate the table. 
 
 By initializing the two variables with different implementations of the `ProtocolExecution` and `CircuitExecution` interfaces, the program can assume different roles and execute different types of MPC protocols.
@@ -33,7 +33,7 @@ bool int_cmp(int i1, int i2) {
 
 ## Circuit file generation
 
-By default, EMP-toolkit does not generate the circuit file (which describes how the boolean gates are connected and the types of each gate), since it computes everything on the fly. However, it does provide special implementations of `ProtocolExecution` and `CircuitExecution` though the `setup_plain_prot()` function to generate the circuit file:
+By default, EMP-toolkit does not generate the circuit file (which describes how the boolean gates are connected and the types of each gate), since it computes everything on the fly. However, it does provide special implementations of `ProtocolExecution` and `CircuitExecution` through the `setup_plain_prot()` function to generate the circuit file:
 
 ```c++
 using namespace emp;
