@@ -16,12 +16,7 @@ namespace emp {
             block seed; input->recv_block(&seed, 1);
             shared_prg.reseed(&seed);
 
-            PRG tmp;
-            tmp.reseed(&seed);
-            block a;
-            tmp.random_block(&a, 1);
-            tmp.random_block(&a, 1);
-            this->delta = make_delta(a);
+            input->recv_block(&(this->delta), 1);
         }
 
         ~TriggerProtocol() {

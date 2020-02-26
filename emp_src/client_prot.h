@@ -3,7 +3,6 @@
 
 #include <emp-tool/emp-tool.h>
 #include <iostream>
-#include "client_circ.h"
 
 namespace emp {
     template<typename IO>
@@ -12,9 +11,9 @@ namespace emp {
         IO* io;
         IO* io2;
         PRG prg, shared_prg;
-      ClientCircuit<IO> * gc;
+        HalfGateGen<IO> * gc;
         FileIO * tmp;
-        ClientProtocol(IO* io, IO* io2, ClientCircuit<IO>* gc, block * seed): ProtocolExecution(ALICE) {
+        ClientProtocol(IO* io, IO* io2, HalfGateGen<IO>* gc, block * seed): ProtocolExecution(ALICE) {
             this->io = io;
             this->io2 = io2;
             this->gc = gc;
@@ -32,10 +31,7 @@ namespace emp {
             if(party == ALICE) {
 
                 shared_prg.random_block(label, length);
-                for (int i = 0; i < length; ++i) {
-                    if(b[i])
-                        label[i] = xorBlocks(label[i], gc->delta);
-                }
+
             } else {
 //                ot->send_cot(label, gc->delta, length);
             }
@@ -44,15 +40,9 @@ namespace emp {
 
         void reveal(bool* b, int party, const block * label, int length) {
             for (int i = 0; i < length; ++i) {
-                if(isOne(&label[i]))
-                    b[i] = true;
-                else if (isZero(&label[i]))
-                    b[i] = false;
-                else {
-                    bool lsb = getLSB(label[i]);
-                    io2->send_data(&lsb, 1);
-                    b[i] = false;
-                }
+                io2->send_block(&label[i], 1);
+                block label_ = xorBlocks(label[i], gc->delta);
+                io2->send_block(&label_, 1);
             }
         }
     };

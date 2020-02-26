@@ -1,7 +1,7 @@
-cmake_minimum_required (VERSION 2.8.11)
-project (tap)
+cmake_minimum_required(VERSION 3.10)
+project(example_rules)
+
 set(CMAKE_CXX_STANDARD 14)
-set(NAME "emp-sh2pc")
 
 find_path(CMAKE_FOLDER NAMES cmake/emp-tool-config.cmake)
 include(${CMAKE_FOLDER}/cmake/common.cmake)
@@ -16,9 +16,7 @@ macro (add_test _name)
     add_test_with_lib(${_name} ${EMP-OT_LIBRARIES})
 endmacro()
 
-#add_test (circuit)
 add_test (client)
-add_test (tap)
 add_test (trigger)
 add_test (action)
-add_test (ot)
+add_test (tap)

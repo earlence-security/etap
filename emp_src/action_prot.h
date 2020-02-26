@@ -13,7 +13,6 @@ namespace emp {
             this->table = table;
             this->input = input;
             block seed;
-//            table->recv_block(&seed, 1);
             shared_prg.reseed(&seed);
 
         }
