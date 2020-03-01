@@ -8,11 +8,6 @@ app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-sys.path.insert(0, "/home/ruizhe/oblivtap/")  # not installed in the sys path, need to add manually
-import trigger
-
-trigger.init('/home/ruizhe/example_rules')  # init, basically just add the emp path
-
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -31,7 +26,6 @@ def add():
             'src': 'server-trigger'}
 
 
-@trigger.add_wrapper
 def add_data(*args):
     pass
 
@@ -57,6 +51,5 @@ def enc():
     }
 
 
-@trigger.enc_wrapper
 def enc_data(*args):
     pass

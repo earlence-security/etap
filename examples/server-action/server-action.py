@@ -7,11 +7,6 @@ app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-sys.path.insert(0, "/home/ruizhe/oblivtap")
-import action
-
-action.init()
-
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -31,7 +26,6 @@ def add():
             'src': 'server-action'}
 
 
-@action.add_wrapper
 def add_data(*args):
     pass
 
@@ -63,6 +57,5 @@ def recall():
             'src': 'server-action'}
 
 
-@action.dec_wrapper
 def decode_data(*args):
     pass
