@@ -232,6 +232,7 @@ def send_action(X, ct, F):
                      api_action,
                      params=query_action,
                      data=P+Y+ct,
-                     headers={'Content-Type': 'application/octet-stream'})
+                     headers={'Content-Type': 'application/octet-stream'},
+                     verify=False)
     return {"data": "ok",
             "src": "server-platform"}

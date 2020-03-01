@@ -9,9 +9,9 @@ from client_helper import *
 token_action = '1234'
 token_trigger = '5678'
 
-base_trigger = 'http://127.0.0.1:5000'
-base_action = 'http://127.0.0.1:9000'
-base_platform = 'http://127.0.0.1:7000'
+base_trigger = 'https://127.0.0.1:5000'
+base_action = 'https://127.0.0.1:9000'
+base_platform = 'https://127.0.0.1:7000'
 
 
 def gen_binary():
@@ -40,7 +40,10 @@ def trigger_action(user, id):
              "tap_address": base_platform + '/recall',
              "user_id": user}
 
-    r_data = requests.request("POST", base_trigger + "/recall", params=query)
+    r_data = requests.request("POST",
+                              base_trigger + "/recall",
+                              params=query,
+                              verify=False)
     print(r_data.text)
 
 
@@ -61,7 +64,8 @@ def add_combine_f(user, id):
                               base_trigger + "/add",
                               params=query,
                               headers={'Content-Type': 'application/octet-stream'},
-                              data=data)
+                              data=data,
+                              verify=False)
     print(r_data.text)
 
     # action
@@ -75,7 +79,8 @@ def add_combine_f(user, id):
     r_data = requests.request("POST",
                               base_action + "/add", params=query,
                               headers={'Content-Type': 'application/octet-stream'},
-                              data=data)
+                              data=data,
+                              verify=False)
     print(r_data.text)
 
     # platform
@@ -90,7 +95,8 @@ def add_combine_f(user, id):
     r_data = requests.request("POST",
                               base_platform + "/add", params=query,
                               headers={'Content-Type': 'application/octet-stream'},
-                              data=data)
+                              data=data,
+                              verify=False)
     print(r_data.text)
 
 
@@ -108,7 +114,8 @@ def add_combine(user, id):
                                   base_action + "/add",
                                   params=query,
                                   headers={'Content-Type': 'application/octet-stream'},
-                                  data=data)
+                                  data=data,
+                                  verify=False)
         print(r_data.text)
 
     # platform
@@ -120,7 +127,8 @@ def add_combine(user, id):
                                   base_platform + "/add",
                                   params=query,
                                   headers={'Content-Type': 'application/octet-stream'},
-                                  data=data)
+                                  data=data,
+                                  verify=False)
         print(r_data.text)
 
     # trigger
@@ -133,5 +141,6 @@ def add_combine(user, id):
                                   base_trigger + "/add",
                                   params=query,
                                   headers={'Content-Type': 'application/octet-stream'},
-                                  data=data)
+                                  data=data,
+                                  verify=False)
         print(r_data.text)

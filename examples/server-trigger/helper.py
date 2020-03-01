@@ -15,7 +15,7 @@ def gen_random_number(length, val_min=0, val_max=9):
     return return_val
 
 
-def trigger_id_resoluter(id):
+def gen_trigger_data(id):
     if id == 1:
         return gen_random_text(144)
     elif id == 2:
