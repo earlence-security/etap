@@ -1,4 +1,6 @@
 import sqlite3
+from flask import Flask, request
+
 
 from functools import wraps
 
@@ -198,18 +200,64 @@ def _exec_rule(P: bytes, Y: bytes, ct: bytes, dec: bytes):
         j = int.from_bytes(data[:4], byteorder='big')
         payload = data[4:]
 
-        return j, y, payload
+        return True, y, payload
 
     else:
-        return -1, b'', b''
+        return False, b'', b''
 
 
 def add_wrapper(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        _add(args[0])
+        user_id = request.values.get('user_id')
+        trigger_id = request.values.get('trigger_id')
+        dec = request.data
+
+        add_param = {
+            'user_id': user_id,
+            'trigger_id': trigger_id,
+            'dec': dec
+        }
+
+        _add(add_param[0])
         return func(*args, **kwargs)
     return wrapper
+
+
+def decode(P, Y, ct, user_id, action_id):
+    query_id = user_id + ':' + action_id
+    db = _database.cursor()
+    db.row_factory = sqlite3.Row
+
+    entry_info = db.execute(
+        'SELECT * FROM action_info WHERE literal_id = ?',
+        (query_id,)
+    ).fetchone()
+
+    if not entry_info:
+        raise ValueError('Invalid user_id or trigger_id')
+
+    entry_data = db.execute(
+        'SELECT * FROM action_data WHERE literal_id = ? AND data_index = ?',
+        (query_id, entry_info['data_end'])
+    ).fetchone()
+
+    if not entry_data:
+        raise ValueError('Expired dec.')
+
+    db.execute(
+        'DELETE FROM action_data WHERE literal_id = ? AND data_index = ?',
+        (query_id, entry_info['data_end'])
+    )
+
+    db.execute(
+        'UPDATE action_info SET data_end = ? '
+        'WHERE literal_id = ?',
+        (int(entry_info['data_end']) + 1, query_id)
+    )
+
+    _database.commit()
+    return _exec_rule(P, Y, ct, entry_data['data_dec'])
 
 
 def dec_wrapper(func):

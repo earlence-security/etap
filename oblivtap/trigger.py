@@ -230,7 +230,7 @@ def add_wrapper(func):
             'trigger_id': trigger_id,
             'enc': enc
         }
-        _add(args[0])
+        _add(add_param[0])
         return func(*args, **kwargs)
     return wrapper
 

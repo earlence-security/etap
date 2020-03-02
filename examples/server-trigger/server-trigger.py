@@ -11,7 +11,7 @@ log.setLevel(logging.ERROR)
 
 
 import oblivtap.trigger as trigger
-trigger.init('/home/ruizhe/example_rules')  # init, basically just add the emp path
+trigger.init('/home/ruizhe/example_rules')  # init, basically just add the emp binary path
 
 
 # Additional API to receive circuit encoding info from client
