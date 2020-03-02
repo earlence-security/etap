@@ -7,8 +7,7 @@ app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-sys.path.insert(0, "/home/ruizhe/oblivtap")
-import action
+import oblivtap.action as action
 
 action.init()
 

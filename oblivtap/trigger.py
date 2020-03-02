@@ -1,6 +1,7 @@
 import sqlite3
 import subprocess
 import requests
+from flask import Flask, request
 
 from functools import wraps
 
@@ -220,14 +221,58 @@ def _exec_rule(j: int, enc: bytes, x: List[Any], rule_id, payload=None):
 def add_wrapper(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        user_id = request.values.get('user_id')
+        trigger_id = request.values.get('trigger_id')
+        enc = request.data
+
+        add_param = {
+            'user_id': user_id,
+            'trigger_id': trigger_id,
+            'enc': enc
+        }
         _add(args[0])
         return func(*args, **kwargs)
     return wrapper
 
 
-def enc_wrapper(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        _enc(args[0])
-        return func(*args, **kwargs)
-    return wrapper
+def enc_data(x, payload, user_id, trigger_id):
+    query_id = user_id + ':' + trigger_id
+    db = _database.cursor()
+    db.row_factory = sqlite3.Row
+
+    entry_info = db.execute(
+        'SELECT * FROM trigger_info WHERE literal_id = ?',
+        (query_id,)
+    ).fetchone()
+
+    if not entry_info:
+        raise ValueError('Invalid user_id or trigger_id')
+
+    entry_data = db.execute(
+        'SELECT * FROM trigger_data WHERE literal_id = ? AND data_index = ?',
+        (query_id, entry_info['data_end'])
+    ).fetchone()
+
+    if not entry_data:
+        raise ValueError('Expired enc.')
+
+    db.execute(
+        'DELETE FROM trigger_data WHERE literal_id = ? AND data_index = ?',
+        (query_id, entry_info['data_end'])
+    )
+
+    db.execute(
+        'UPDATE trigger_info SET data_end = ? '
+        'WHERE literal_id = ?',
+        (int(entry_info['data_end']) + 1, query_id)
+    )
+
+    _database.commit()
+    X, ct = _exec_rule(j=entry_data['id'],
+                       enc=entry_data['data_enc'],
+                       x=[x],
+                       rule_id=trigger_id,
+                       payload=payload)
+    return X, ct
+
+
