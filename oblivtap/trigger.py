@@ -235,7 +235,7 @@ def add_wrapper(func):
     return wrapper
 
 
-def enc_data(x, payload, user_id, trigger_id):
+def encode(x, payload, user_id, trigger_id):
     query_id = user_id + ':' + trigger_id
     db = _database.cursor()
     db.row_factory = sqlite3.Row
