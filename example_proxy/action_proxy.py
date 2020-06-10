@@ -13,11 +13,11 @@ from flask import Flask, request
 from requests_toolbelt import MultipartDecoder
 
 
-client_id = '1087017631334.1099932295812'
-client_secret = '0818b46f54757a700bf741eaeb06c766'
-channel_id = "C012B0HUNLF"
-oauth_scope = 'chat:write:user'
-oauth_token = 'xoxb-1087017631334-1087023501590-BnYzaKxLIqD3zuFaKej5DlXL'
+client_id = ''
+client_secret = ''
+channel_id = ''
+oauth_scope = ''
+oauth_token = ''
 
 app = Flask(__name__)
 client = slack.WebClient(token=oauth_token)

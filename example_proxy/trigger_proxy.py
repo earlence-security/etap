@@ -12,11 +12,13 @@ from flask import Flask, request, make_response
 from requests_toolbelt import MultipartEncoder
 
 
+
+
 app = Flask(__name__)
-client = twitter.Api(consumer_key='UfuujryE9L0NS2XMdQ1YeroBz',
-                     consumer_secret='3nGi56yRr2z3AESH8YSbXeKIc0cxAm18ExTXdNtN4gBuVmVbVQ',
-                     access_token_key='1255514428088487938-TG6Ar2EzWUVpsmWNujxMecCsPpvhO8',
-                     access_token_secret='kXeRvREP0Bp1pCSsfeUphZVKH3M3DLpx5UyOmVAGAndgY')
+client = twitter.Api(consumer_key='',
+                     consumer_secret='',
+                     access_token_key='',
+                     access_token_secret='')
 
 last_tweet = None
 
