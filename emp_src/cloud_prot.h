@@ -5,11 +5,9 @@ namespace emp {
     template<typename IO>
     class CloudProtocol: public ProtocolExecution {
     public:
-        IO* table = nullptr;
         IO* input = nullptr;
         IO* output = nullptr;
-        CloudProtocol(IO* table, IO *input, IO *output): ProtocolExecution(BOB) {
-            this->table = table;
+        CloudProtocol(IO *input, IO *output): ProtocolExecution(BOB) {
             this->input = input;
             this->output = output;
         }

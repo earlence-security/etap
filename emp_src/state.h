@@ -25,7 +25,7 @@ public:
             for (int i : parents_0) {
                 tmp1 = tmp1 ^ q[i];
             }
-            tmp1 = !x & tmp1;
+//            tmp1 = !x & tmp1;
         }
 
         Bit tmp2(false);
@@ -33,7 +33,7 @@ public:
             for (int i : parents_1) {
                 tmp2 = tmp2 ^ q[i];
             }
-            tmp2 = x & tmp2;
+//            tmp2 = x & tmp2;
         }
 
         Bit tmp3(false);
@@ -43,7 +43,9 @@ public:
             }
         }
 
-        q_ = tmp1 ^ tmp2 ^ tmp3;
+        q_ = tmp1.select(x, tmp2) ^ tmp3;
+
+//        q_ = tmp1 ^ tmp2 ^ tmp3;
         return q_;
     }
 

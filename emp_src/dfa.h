@@ -9,7 +9,7 @@ using namespace emp;
 
 class DFA {
 public:
-    void read_from_file(const char* fname) {
+    void read_from_file(const std::string& fname) {
         std::ifstream dfa_file(fname);
 
         int num_states;

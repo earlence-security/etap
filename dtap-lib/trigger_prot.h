@@ -11,7 +11,7 @@ public:
     PRG shared_prg;
     TriggerProtocol(block seed, block delta) {
         shared_prg.reseed(&seed);
-        this->delta = delta;
+        this->delta = make_delta(delta);
     }
 
     ~TriggerProtocol() {

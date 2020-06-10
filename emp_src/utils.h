@@ -183,7 +183,7 @@ std::vector<Bit> lookup(const std::vector<Bit>& x,
 
 
 
-std::vector<Bit> dfa_extract(const char * dfa_file, const char * r_dfa_file, const std::vector<Bit>& x) {
+std::vector<Bit> dfa_extract(const std::string& dfa_file, const std::string& r_dfa_file, const std::vector<Bit>& x) {
 
     DFA dfa;
     dfa.read_from_file(dfa_file);
@@ -223,7 +223,7 @@ std::vector<Bit> dfa_extract(const char * dfa_file, const char * r_dfa_file, con
 }
 
 
-Bit dfa_match(const char * dfa_file, const std::vector<Bit>& x) {
+Bit dfa_match(const std::string& dfa_file, const std::vector<Bit>& x) {
 
     DFA dfa;
     dfa.read_from_file(dfa_file);
@@ -237,6 +237,111 @@ Bit dfa_match(const char * dfa_file, const std::vector<Bit>& x) {
 
     return dfa.is_accept_state(q);
 }
+
+
+std::vector<Bit> dfa_remove(const std::string& dfa_file, const std::string& r_dfa_file, const std::vector<Bit>& x) {
+
+    DFA dfa;
+    dfa.read_from_file(dfa_file);
+
+    DFA r_dfa;
+    r_dfa.read_from_file(r_dfa_file);
+
+    auto q = dfa.get_initial_states();
+    auto q_ = r_dfa.get_initial_states();
+
+    std::vector<Bit> end;
+
+    for (int i = 0; i < x.size(); i++) {
+        q = dfa.process(q, x[i]);
+        if (i % 8 == 7) {
+            end.push_back(dfa.is_accept_state(q));
+        }
+    }
+
+    std::vector<Bit> start;
+
+    for (int i = x.size()-1; i >= 0; i--) {
+        q_ = r_dfa.process(q_, x[i]);
+        if (i % 8 == 0) {
+            start.push_back(r_dfa.is_accept_state(q_));
+        }
+    }
+
+    std::reverse(start.begin(), start.end());
+
+    auto m = find_match(start, end);
+
+    auto y = remove_match(m, x);
+
+    return y;
+
+}
+
+
+std::vector<Bit> dfa_remove_single_char(const std::string& dfa_file, const std::vector<Bit>& x) {
+
+    DFA dfa;
+    dfa.read_from_file(dfa_file);
+
+    auto q = dfa.get_initial_states();
+
+    std::vector<Bit> m;
+
+    for (int i = 0; i < x.size(); i++) {
+        q = dfa.process(q, x[i]);
+        if (i % 8 == 7) {
+            m.push_back(dfa.is_accept_state(q));
+        }
+    }
+
+    auto y = remove_match(m, x);
+
+    return y;
+
+}
+
+
+std::vector<Bit> dfa_find_single_char(const std::string& dfa_file, const std::vector<Bit>& x) {
+
+    DFA dfa;
+    dfa.read_from_file(dfa_file);
+
+    auto q = dfa.get_initial_states();
+
+    std::vector<Bit> m;
+
+    for (int i = 0; i < x.size(); i++) {
+        q = dfa.process(q, x[i]);
+        if (i % 8 == 7) {
+            m.push_back(dfa.is_accept_state(q));
+        }
+    }
+
+    return m;
+
+}
+
+
+
+std::vector<Bit> split(const std::string& dfa_file, const std::vector<Bit>& x, int index) {
+    auto d = dfa_find_single_char(dfa_file, x);
+
+    if (index == 1) {
+        auto m = find_first(d);
+        auto y = extract_match(m, x);
+        return y;
+    } else if (index == -1) {
+        auto m = find_last(d);
+        auto y = extract_match(m, x);
+        return y;
+    } else {
+        std::cerr << "Not impelmented" << std::endl;
+        return {};
+    }
+}
+
+
 
 
 

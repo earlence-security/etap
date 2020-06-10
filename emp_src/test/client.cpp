@@ -40,129 +40,27 @@ std::vector<Bit> get_string_labels(const std::string& s, int length = -1, int pa
 
 
 
-
-std::vector<Bit> dfa_remove(const char * dfa_file, const char * r_dfa_file, const std::vector<Bit>& x) {
-
-    DFA dfa;
-    dfa.read_from_file(dfa_file);
-
-    DFA r_dfa;
-    r_dfa.read_from_file(r_dfa_file);
-
-    auto q = dfa.get_initial_states();
-    auto q_ = r_dfa.get_initial_states();
-
-    std::vector<Bit> end;
-
-    for (int i = 0; i < x.size(); i++) {
-        q = dfa.process(q, x[i]);
-        if (i % 8 == 7) {
-            end.push_back(dfa.is_accept_state(q));
-        }
-    }
-
-    std::vector<Bit> start;
-
-    for (int i = x.size()-1; i >= 0; i--) {
-        q_ = r_dfa.process(q_, x[i]);
-        if (i % 8 == 0) {
-            start.push_back(r_dfa.is_accept_state(q_));
-        }
-    }
-
-    std::reverse(start.begin(), start.end());
-
-    auto m = find_match(start, end);
-
-    auto y = remove_match(m, x);
-
-    return y;
-
-}
-
-
-std::vector<Bit> dfa_remove_single_char(const char * dfa_file, const std::vector<Bit>& x) {
-
-    DFA dfa;
-    dfa.read_from_file(dfa_file);
-
-    auto q = dfa.get_initial_states();
-
-    std::vector<Bit> m;
-
-    for (int i = 0; i < x.size(); i++) {
-        q = dfa.process(q, x[i]);
-        if (i % 8 == 7) {
-            m.push_back(dfa.is_accept_state(q));
-        }
-    }
-
-    auto y = remove_match(m, x);
-
-    return y;
-
-}
-
-
-std::vector<Bit> dfa_find_single_char(const char * dfa_file, const std::vector<Bit>& x) {
-
-    DFA dfa;
-    dfa.read_from_file(dfa_file);
-
-    auto q = dfa.get_initial_states();
-
-    std::vector<Bit> m;
-
-    for (int i = 0; i < x.size(); i++) {
-        q = dfa.process(q, x[i]);
-        if (i % 8 == 7) {
-            m.push_back(dfa.is_accept_state(q));
-        }
-    }
-
-    return m;
-
-}
-
-
-
-std::vector<Bit> split(const char * dfa_file, const std::vector<Bit>& x, int index) {
-    auto d = dfa_find_single_char(dfa_file, x);
-
-    if (index == 1) {
-        auto m = find_first(d);
-        auto y = extract_match(m, x);
-        return y;
-    } else if (index == -1) {
-        auto m = find_last(d);
-        auto y = extract_match(m, x);
-        return y;
-    } else {
-        std::cerr << "Not impelmented" << std::endl;
-        return {};
-    }
-}
-
-
-
-
-
 int main(int argc, char** argv) {
 
 
-    // run computation with semi-honest model
-    FileIO * io = new FileIO("table.txt", false);
-    FileIO * enc = new FileIO("enc.txt", false);
-    FileIO * dec = new FileIO("dec.txt", false);
+    // argv[2]: encoding data file
+    // argv[3]: circuit table file
+    // argv[4]: decoding data file
+    // argv[5]: dfa directory
+    FileIO * enc_io = new FileIO(argv[2], true);
+    FileIO * table_io = new FileIO(argv[3], false);
+    FileIO * dec_io = new FileIO(argv[4], false);
+    std::string dfa_dir(argv[5]);
 
 
-    block seed;
-    PRG tmp;
-    tmp.random_block(&seed, 1);
+    block seed, delta;
+    enc_io->recv_block(&seed, 1);
+    enc_io->recv_block(&delta, 1);
 
-    auto * t = new HalfGateGen<FileIO>(io);
+    auto * t = new HalfGateGen<FileIO>(table_io);
+    t->set_delta(delta);
     CircuitExecution::circ_exec = t;
-    ProtocolExecution::prot_exec = new ClientProtocol<FileIO>(enc, dec, t, &seed);
+    ProtocolExecution::prot_exec = new ClientProtocol<FileIO>(dec_io, &seed);
 
 
     int rule_id = std::stoi(argv[1]);
@@ -171,7 +69,7 @@ int main(int argc, char** argv) {
         case 1: {
             auto x = get_empty_string_labels(140);
 
-            auto p = dfa_match("dfa/dfa1.txt", x);
+            auto p = dfa_match(dfa_dir + "/dfa1.txt", x);
             auto y = x;
 
             p.reveal<bool>();
@@ -224,7 +122,7 @@ int main(int argc, char** argv) {
             auto x = get_empty_string_labels(200);
 
             auto p = Bit(false, ALICE);
-            auto y = dfa_extract("dfa/dfa5.txt", "dfa/dfa5_2.txt", x);
+            auto y = dfa_extract(dfa_dir + "/dfa5.txt", dfa_dir + "/dfa5_2.txt", x);
 
             p.reveal<bool>();
             for (auto yi : y)
@@ -235,11 +133,11 @@ int main(int argc, char** argv) {
         case 6: {
             auto x = get_empty_string_labels(7);
 
-//            auto p1 = dfa_match("dfa/dfa6_1.txt", x);
-//            auto p2 = dfa_match("dfa/dfa6_2.txt", x);
-//            auto p3 = dfa_match("dfa/dfa6_3.txt", x);
+//            auto p1 = dfa_match(dfa_dir + "/dfa6_1.txt", x);
+//            auto p2 = dfa_match(dfa_dir + "/dfa6_2.txt", x);
+//            auto p3 = dfa_match(dfa_dir + "/dfa6_3.txt", x);
 //            auto p = p1 | p2 | p3;
-            auto p = dfa_match("dfa/dfa6.txt", x);
+            auto p = dfa_match(dfa_dir + "/dfa6.txt", x);
 
             p.reveal<bool>();
             auto y = x;
@@ -252,7 +150,7 @@ int main(int argc, char** argv) {
             auto x = get_empty_string_labels(12);
 
             auto p = Bit(false, ALICE);
-            auto y = dfa_remove_single_char("dfa/dfa7.txt", x);
+            auto y = dfa_remove_single_char(dfa_dir + "/dfa7.txt", x);
 
             p.reveal<bool>();
             for (auto yi : y)
@@ -266,8 +164,8 @@ int main(int argc, char** argv) {
             auto x_2 = get_empty_string_labels(50);
 
             auto p = Bit(false, ALICE);
-            auto y_1 = split("dfa/dfa8.txt", x_1, 1);
-            auto y_2 = split("dfa/dfa8.txt", x_1, -1);
+            auto y_1 = split(dfa_dir + "/dfa8.txt", x_1, 1);
+            auto y_2 = split(dfa_dir + "/dfa8.txt", x_1, -1);
             auto y_3 = x_2;
 
             p.reveal<bool>();
@@ -312,7 +210,7 @@ int main(int argc, char** argv) {
                                             get_string_labels("list0", 5)};
 
             auto p = start_with(x_1, s);
-            auto y_1 = dfa_remove("dfa/dfa10_1.txt", "dfa/dfa10_1r.txt", x_1);
+            auto y_1 = dfa_remove(dfa_dir + "/dfa10_1.txt", dfa_dir + "/dfa10_1r.txt", x_1);
             auto y_2 = lookup(x_2, k, v);
 
             p.reveal<bool>();
@@ -357,7 +255,7 @@ int main(int argc, char** argv) {
         case 103: {
             auto x = get_empty_string_labels(100);
 
-            auto p = dfa_match("dfa/dfa1.txt", x);
+            auto p = dfa_match(dfa_dir + "/dfa1.txt", x);
 
             p.reveal<bool>();
             break;
@@ -366,7 +264,7 @@ int main(int argc, char** argv) {
         case 104: {
             auto x = get_empty_string_labels(100);
 
-            auto y = dfa_remove("dfa/dfa104.txt", "dfa/dfa104.txt", x);
+            auto y = dfa_remove(dfa_dir + "/dfa104.txt", dfa_dir + "/dfa104.txt", x);
 
             for (auto yi : y)
                 yi.reveal<bool>();
@@ -376,7 +274,7 @@ int main(int argc, char** argv) {
         case 105: {
             auto x = get_empty_string_labels(100);
 
-            auto y = split("dfa/dfa8.txt", x, 1);
+            auto y = split(dfa_dir + "/dfa8.txt", x, 1);
 
             for (auto yi : y)
                 yi.reveal<bool>();
@@ -386,7 +284,7 @@ int main(int argc, char** argv) {
         case 106: {
             auto x = get_empty_string_labels(100);
 
-            auto y = dfa_extract("dfa/dfa5.txt", "dfa/dfa5_2.txt", x);
+            auto y = dfa_extract(dfa_dir + "/dfa5.txt", dfa_dir + "/dfa5_2.txt", x);
 
             for (auto yi : y)
                 yi.reveal<bool>();
@@ -443,9 +341,9 @@ int main(int argc, char** argv) {
 
 
 
-    delete io;
-    delete enc;
-    delete dec;
+    delete table_io;
+    delete enc_io;
+    delete dec_io;
 }
 
 

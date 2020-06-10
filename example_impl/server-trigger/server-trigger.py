@@ -2,6 +2,7 @@ from flask import Flask, request
 import logging
 import os
 import requests
+import sys
 from .helper import gen_trigger_data
 
 
@@ -10,7 +11,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 
-import oblivtap.trigger as trigger
+from oblivtap import trigger
 trigger.init('/home/ruizhe/example_rules')  # init, basically just add the emp binary path
 
 
