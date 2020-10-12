@@ -1,14 +1,14 @@
 
-#ifndef DTAPLIB__ACTION_PROT_H
-#define DTAPLIB__ACTION_PROT_H
+#ifndef EMPUTILS__DECODER_PROT_H
+#define EMPUTILS__DECODER_PROT_H
 
 namespace emp {
-class ActionProtocol: public ProtocolExecution {
+class DecoderProtocol: public ProtocolExecution {
 public:
     MemIO* table = nullptr;
     MemIO* output = nullptr;
     FileIO* test;
-    ActionProtocol(const char * labels, const char * dec, int length): ProtocolExecution(BOB) {
+    DecoderProtocol(const char * labels, const char * dec, int length): ProtocolExecution(BOB) {
         output = new MemIO();
         output->send_block((block *)labels, length);
 
@@ -16,7 +16,7 @@ public:
         table->send_data(dec, length);
     }
 
-    ~ActionProtocol() {
+    ~DecoderProtocol() {
     }
 
     void feed(block * label, int party, const bool* b, int length) {
@@ -41,4 +41,4 @@ public:
 };
 }
 
-#endif //DTAPLIB__ACTION_PROT_H
+#endif //EMPUTILS__DECODER_PROT_H

@@ -1,6 +1,6 @@
 
-#ifndef DTAP_LIB__DUMMY_CIRC_H
-#define DTAP_LIB__DUMMY_CIRC_H
+#ifndef EMPUTILS__DUMMY_CIRC_H
+#define EMPUTILS__DUMMY_CIRC_H
 
 namespace emp
 {
@@ -35,4 +35,4 @@ public:
 
 }
 
-#endif //DTAP_LIB__DUMMY_CIRC_H
+#endif //EMPUTILS__DUMMY_CIRC_H

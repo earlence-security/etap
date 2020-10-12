@@ -1,20 +1,20 @@
 
-#ifndef DTAP_LIB__TRIGGER_PROT_H
-#define DTAP_LIB__TRIGGER_PROT_H
+#ifndef EMPUTILS__ENCODER_PROT_H
+#define EMPUTILS__ENCODER_PROT_H
 
 namespace emp {
 
 
-class TriggerProtocol: public ProtocolExecution {
+class EncoderProtocol: public ProtocolExecution {
 public:
     block delta;
     PRG shared_prg;
-    TriggerProtocol(block seed, block delta) {
+    EncoderProtocol(block seed, block delta) {
         shared_prg.reseed(&seed);
         this->delta = make_delta(delta);
     }
 
-    ~TriggerProtocol() {
+    ~EncoderProtocol() {
     }
 
     void feed(block * label, int party, const bool* b, int length) {
@@ -31,4 +31,4 @@ public:
 }
 
 
-#endif //DTAP_LIB__TRIGGER_PROT_H
+#endif //EMPUTILS__ENCODER_PROT_H

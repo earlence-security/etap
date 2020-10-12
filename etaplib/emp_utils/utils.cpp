@@ -4,23 +4,23 @@
 #include <emp-tool/emp-tool.h>
 #include <pybind11/pybind11.h>
 
-#include "trigger_prot.h"
-#include "action_prot.h"
+#include "encoder_prot.h"
+#include "decoder_prot.h"
 #include "dummy_circ.h"
 
 namespace py = pybind11;
 
 
-void trigger_init(const char * seed, const char * delta) {
+void init_encoder(const char * seed, const char * delta) {
     emp::CircuitExecution::circ_exec = new emp::DummyCircExec();
     emp::ProtocolExecution::prot_exec =
-        new emp::TriggerProtocol(*(emp::block *)seed, *(emp::block *)delta);
+        new emp::EncoderProtocol(*(emp::block *)seed, *(emp::block *)delta);
 }
 
-void action_init(const char * labels, const char * dec, int length) {
+void init_decoder(const char * labels, const char * dec, int length) {
     emp::CircuitExecution::circ_exec = new emp::DummyCircExec();
     emp::ProtocolExecution::prot_exec =
-        new emp::ActionProtocol(labels, dec, length);
+        new emp::DecoderProtocol(labels, dec, length);
 }
 
 
@@ -114,11 +114,11 @@ py::bytes encode_ascii_str(const std::string& str, int length = -1) {
 
 std::string decode_ascii_str(int length) {
 
-    std::vector<emp::Bit> x(length * 8);
     std::vector<bool> b;
 
-    for (auto & xi : x) {
-        b.push_back(xi.reveal<bool>());
+    for (int i = 0; i < length * 8; i++) {
+        emp::Bit x(false, emp::BOB);
+        b.push_back(x.reveal<bool>());
     }
 
     return ascii2string(b);
@@ -145,15 +145,15 @@ py::bytes test(int i, int j) {
     return py::bytes(std::string(buffer, 16));
 }
 
-PYBIND11_MODULE(dtaplib, m) {
+PYBIND11_MODULE(emp_utils, m) {
     // helper
     py::class_<emp::ProtocolExecution>(m, "ProtocolExecution")
         .def_property_static("prot_exec",
                              nullptr,
-                             &trigger_init);
+                             &init_encoder);
 
     // trigger functions
-    m.def("trigger_init", &trigger_init, py::arg("seed"), py::arg("delta"));
+    m.def("init_encoder", &init_encoder, py::arg("seed"), py::arg("delta"));
 
     m.def("encode_bit", &encode_bit);
 
@@ -162,7 +162,7 @@ PYBIND11_MODULE(dtaplib, m) {
     m.def("encode_ascii_str", &encode_ascii_str, py::arg("str"), py::arg("length") = -1);
 
     // action functions
-    m.def("action_init", &action_init, py::arg("labels"), py::arg("dec"), py::arg("length"));
+    m.def("init_decoder", &init_decoder, py::arg("labels"), py::arg("dec"), py::arg("length"));
 
     m.def("decode_bit", &decode_bit);
 
