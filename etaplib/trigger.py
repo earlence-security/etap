@@ -44,7 +44,7 @@ def _init_db(db: sqlite3.Connection):
     cur.execute(
         '''
         CREATE TABLE trigger_secret (
-            trigger_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            trigger_id INTEGER PRIMARY KEY,
             circuit_id INTEGER DEFAULT 0,
             secret_key BLOB NOT NULL
         );
@@ -54,7 +54,7 @@ def _init_db(db: sqlite3.Connection):
     cur.execute(
         '''
         CREATE TABLE trigger_format (
-            trigger_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            trigger_id INTEGER PRIMARY KEY,
             formatter TEXT NOT NULL
         );
         '''

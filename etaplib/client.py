@@ -10,15 +10,37 @@ import requests
 
 import emp_utils
 
-
 ts_address = 'http://127.0.0.1:5000'
 as_address = 'http://127.0.0.1:5002'
 tap_address = 'http://127.0.0.1:5001'
-emp_client_binary = '/home/ychen459/dtap-confidentiality/emp_src/bin/client'
-dfa_directory = '/home/ychen459/dtap-confidentiality/emp_src/dfa'
+emp_client_binary = '/tmp/tmp.MiQois5BcC/cmake-build-debug/bin/client'
 
 
-def setup(rule_id: int, circuit_id: int, trigger_secret: bytes, action_secret: bytes):
+def get_input_formatter(rule_description: str):
+    formatter = []
+    for line in rule_description.splitlines():
+        tokens = line.split()
+        if len(tokens) > 0 and tokens[0].startswith('x'):
+            f = {'type': tokens[1]}
+            if tokens[1] == 'str':
+                f['length'] = int(tokens[2])
+            formatter.append(f)
+    return json.dumps(formatter)
+
+
+def get_output_formatter(output_description: str):
+    formatter = []
+    for line in output_description.splitlines():
+        tokens = line.split()
+        if len(tokens) > 0 and tokens[0].startswith('y'):
+            f = {'type': tokens[1]}
+            if tokens[1] == 'str':
+                f['length'] = int(tokens[2])
+            formatter.append(f)
+    return json.dumps(formatter)
+
+
+def setup(circuit_id: int, trigger_secret: bytes, action_secret: bytes, capture_output_format=True):
     j = circuit_id.to_bytes(4, byteorder='big')
 
     e_s = hashlib.shake_128(trigger_secret + j + (0).to_bytes(1, byteorder='big')).digest(16)
@@ -26,12 +48,11 @@ def setup(rule_id: int, circuit_id: int, trigger_secret: bytes, action_secret: b
     k = hashlib.shake_256(trigger_secret + j + (2).to_bytes(1, byteorder='big')).digest(32)
 
     Path('/tmp/enc.txt').write_bytes(e_s + e_r)
-    subprocess.run([emp_client_binary, str(rule_id), '/tmp/enc.txt', '/tmp/table.txt', '/tmp/dec.txt',
-                    dfa_directory], cwd='/tmp')
+    p = subprocess.run([emp_client_binary, sys.argv[1], '/tmp/enc.txt', '/tmp/table.txt', '/tmp/dec.txt',
+                        '1' if capture_output_format else '0'], cwd='/tmp', capture_output=True)
 
     L = Path('/tmp/dec.txt').read_bytes()
     F = Path('/tmp/table.txt').read_bytes()
-
 
     L_0 = L[:16]
     L = L[16:]
@@ -40,13 +61,20 @@ def setup(rule_id: int, circuit_id: int, trigger_secret: bytes, action_secret: b
     d = L[15:len(L):16]
     d = bytes([di & 1 for di in d])
 
-
-    f = Fernet(base64.urlsafe_b64encode(action_secret + emp_utils.xor(L_0, e_r)))
+    if L_0 == b'\xff'*16:
+        f = Fernet(base64.urlsafe_b64encode(action_secret + L_0))
+    else:
+        f = Fernet(base64.urlsafe_b64encode(action_secret + emp_utils.xor(L_0, e_r)))
     d_ = f.encrypt(j + k + e_r + h + d)
 
-    return j, F, d_
+    if capture_output_format:
+        return j, F, d_, get_output_formatter(p.stdout.decode())
+    else:
+        return j, F, d_
 
 
+rule_description = Path(sys.argv[1]).read_text()
+input_format = get_input_formatter(rule_description)
 
 circuit_id = 0
 trigger_secret = b'\xf3\x9d\x91\xc9\xccw\\\xd2\xd25F\x11/\xd2\x1eu'
@@ -55,7 +83,7 @@ action_secret = b'r@\xeb6\xc2\x00\xe2\x95-\xe6W\xa4\xd6\xdf\xee\xa6'
 
 rule_id = 1
 
-j, F, d_ = setup(rule_id, circuit_id, trigger_secret, action_secret)
+j, F, d_, output_format = setup(circuit_id, trigger_secret, action_secret, capture_output_format=True)
 
 
 requests.post(
@@ -63,7 +91,7 @@ requests.post(
             files={
                 "id": rule_id,
                 "secret_key": trigger_secret,
-                "formatter": json.dumps([{'type': 'str', 'length': 140}])
+                "formatter": input_format
             }
         )
 
@@ -72,7 +100,7 @@ requests.post(
             files={
                 "id": rule_id,
                 "secret_key": action_secret,
-                "formatter": json.dumps([{'type': 'str', 'length': 140}])
+                "formatter": output_format
             }
         )
 
@@ -82,12 +110,16 @@ requests.post(
                 "rule_id": rule_id,
                 "circuit_id": circuit_id,
                 "F": F,
-                "d": d_
+                "d": d_,
+                "description": rule_description
             }
         )
+
+print(input_format)
+print(output_format)
 
 
 requests.post(
     url=f'{ts_address}/trigger',
-    data=json.dumps({'id': rule_id, 'data': ['this one has http']})
+    data=json.dumps({'id': rule_id, 'data': ['this one has http', 42]})
 )

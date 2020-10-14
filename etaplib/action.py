@@ -48,7 +48,7 @@ def _init_db(db: sqlite3.Connection):
     cur.execute(
         '''
         CREATE TABLE action_secret (
-            action_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            action_id INTEGER PRIMARY KEY,
             secret_key BLOB NOT NULL
         );
         '''
@@ -57,7 +57,7 @@ def _init_db(db: sqlite3.Connection):
     cur.execute(
         '''
         CREATE TABLE action_format (
-            action_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            action_id INTEGER PRIMARY KEY,
             formatter TEXT NOT NULL
         );
         '''
@@ -117,7 +117,7 @@ def decode(action_id, blobs: List[bytes]):
     j, y, payload = _verify_decode(secret_key, Y, ct, d_)
 
     if j == -1:
-        return None
+        return None, None
 
 
     row = cur.execute('SELECT * FROM action_format WHERE action_id = ?', (action_id,)).fetchone()
@@ -152,7 +152,10 @@ def _verify_decode(secret: bytes, Y: bytes, ct: bytes, d_: bytes):
     for i in range(len(y)):
         L_yi = Y[i * 16:i * 16 + 16]
         if y[i]:
-            digest.update(emp_utils.xor(L_yi, e_r))
+            if L_yi == b'\xff'*16:
+                digest.update(L_yi)
+            else:
+                digest.update(emp_utils.xor(L_yi, e_r))
         else:
             digest.update(L_yi)
     h2 = digest.digest(16)
@@ -165,6 +168,8 @@ def _verify_decode(secret: bytes, Y: bytes, ct: bytes, d_: bytes):
 
     if t > time.time() + _accept_window or h2 != h:
         return -1, None, None
+
+    y = [b'1' if yi else b'0' for yi in y]
 
     return j, y, payload
 

@@ -15,7 +15,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 
-etap.init('/home/ychen459/dtap-confidentiality/emp_src/bin/tap', '/home/ychen459/dtap-confidentiality/emp_src/dfa')
+etap.init('/tmp/tmp.MiQois5BcC/cmake-build-debug/bin/tap')
 
 
 # Additional API to receive circuit encoding info from client
@@ -26,7 +26,12 @@ def add():
     F = request.files.get('F').read()
     d = request.files.get('d').read()
 
-    etap.add_new_circuit(rule_id, circuit_id, F, d)
+    if (desc_file := request.files.get('description')) is not None:
+        description = desc_file.read().decode()
+    else:
+        description = None
+
+    etap.add_new_circuit(rule_id, circuit_id, F, d, description)
 
     return 'success'
 
