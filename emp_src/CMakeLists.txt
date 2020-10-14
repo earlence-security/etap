@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(example_rules)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 find_path(CMAKE_FOLDER NAMES cmake/emp-tool-config.cmake)
 include(${CMAKE_FOLDER}/cmake/common.cmake)
@@ -20,3 +20,4 @@ add_test (client)
 add_test (trigger)
 add_test (action)
 add_test (tap)
+add_test (func_reader)

@@ -14,6 +14,7 @@
 #include "dfa.h"
 
 using namespace emp;
+using String = std::vector<Bit>;
 
 
 std::vector<State> read_dfa(char* fname) {
@@ -327,7 +328,7 @@ std::vector<Bit> dfa_find_single_char(const std::string& dfa_file, const std::ve
 std::vector<Bit> split(const std::string& dfa_file, const std::vector<Bit>& x, int index) {
     auto d = dfa_find_single_char(dfa_file, x);
 
-    if (index == 1) {
+    if (index == 0) {
         auto m = find_first(d);
         auto y = extract_match(m, x);
         return y;
