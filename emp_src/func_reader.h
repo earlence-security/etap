@@ -5,6 +5,7 @@
 #include <utility>
 #include <variant>
 #include <new>
+#include <iostream>
 
 #include <emp-tool/emp-tool.h>
 
@@ -99,10 +100,20 @@ void execute(const std::string& filename, bool print_output_format = false) {
                 iss >> value;
                 c.emplace_back(std::in_place_type<Integer>, 32, value, PUBLIC);
             } else if (type == "str") {
-                char tmp;
-                iss >> tmp;
                 std::string value;
                 std::getline(iss, value);
+
+                for (int i = 0; i < value.length(); i++) {
+                    if (value[i] != ' ') {
+                        value = value.substr(i);
+                        break;
+                    }
+                }
+
+                std::ofstream ofs("/tmp/tmp.txt");
+                ofs<<value<<endl;
+                ofs.close();
+
                 c.emplace_back(get_string_labels(value));
             }
         }
