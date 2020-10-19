@@ -1,0 +1,53 @@
+{
+    "isDoRecipe": false,
+    "title": "Send an SMS when a new GMail is from a specific email address",
+    "desc": "This recipe will send you an sms message when you receive an email from a specific sender.",
+    "triggerChannelTitle": "Gmail",
+    "triggerChannelId": "33",
+    "triggerChannelUrl": "https://ifttt.com//gmail",
+    "triggerTitle": "New email in inbox from",
+    "triggerDesc": null,
+    "triggerId": -1,
+    "actionChannelTitle": "SMS",
+    "actionChannelId": "5",
+    "actionChannelUrl": "https://ifttt.com//sms",
+    "actionTitle": "Send me an SMS",
+    "actionDesc": null,
+    "actionId": -1,
+    "favoritesCount": -1,
+    "addCount": 11000,
+    "creatorName": "katstrand",
+    "creatorUrl": "https://ifttt.com//maker/katstrand",
+    "url": "https://ifttt.com/applets/1110p-send-an-sms-when-a-new-gmail-is-from-a-specific-email-address"
+}
+
+// Trigger data
+// Office365Mail.newEmail.Subject
+// Office365Mail.newEmail.Body
+// Office365Mail.newEmail.BodyPreview
+// Office365Mail.newEmail.SenderName
+// Office365Mail.newEmail.SenderAddress
+// Office365Mail.newEmail.DateTimeReceived
+// Actions
+// Sms.sendMeText.skip()
+// Sms.sendMeText.setMessage()
+// Other
+// Meta.currentUserTime
+// Meta.triggerTime
+
+x0 str 32
+x1 str 4096
+x2 str 1024
+x3 str 32
+x4 str 32
+x5 int
+x6 int
+x7 int
+
+c0 str test_user@sample_website.com
+c1 str Email_Received
+
+i0 eq x4 c0
+
+p i0
+y0 c1
