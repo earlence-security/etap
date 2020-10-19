@@ -99,6 +99,8 @@ void execute(const std::string& filename, bool print_output_format = false) {
                 iss >> value;
                 c.emplace_back(std::in_place_type<Integer>, 32, value, PUBLIC);
             } else if (type == "str") {
+                char tmp;
+                iss >> tmp;
                 std::string value;
                 std::getline(iss, value);
                 c.emplace_back(get_string_labels(value));
