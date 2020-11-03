@@ -4,6 +4,7 @@ import json
 from flask import Flask, request
 import logging
 import requests
+from cryptography.fernet import Fernet
 
 import sys
 sys.path.insert(0, '/home/ychen459/etaplib')
@@ -29,6 +30,7 @@ def add():
 
     trigger.add_new_secret(trigger_id, secret_key, formatter)
 
+
     return 'success'
 
 
@@ -41,9 +43,11 @@ def trigger_func():
 
     trigger_data = data['data']
 
+    test_mode = 'test_mode' in data
+
     trigger_payload = None
 
-    circuit_id, X, ct = trigger.encode(trigger_id, trigger_data, trigger_payload)
+    circuit_id, X, ct = trigger.encode(trigger_id, trigger_data, trigger_payload, test_mode=test_mode)
 
     #  send trigger data to tap
     requests.request("POST",
@@ -54,6 +58,33 @@ def trigger_func():
                          "j": circuit_id.to_bytes(4, byteorder='big'),
                          "X": X,
                          "ct": ct
+                     })
+
+    return app.make_response('success')
+
+
+key = b'0FJ1Cx4TAA_TmAgWoKxx62aHLtzqr56KHvLiA71Kgpk='
+f = Fernet(key)
+
+
+@app.route('/trigger/plain', methods=['POST'])
+def trigger_plain():
+    data = json.loads(request.data)
+
+    trigger_id = data['id']
+
+    trigger_data = data['data']
+
+    trigger_payload = None
+
+    blob = f.encrypt(json.dumps(trigger_data).encode())
+
+    #  send trigger data to tap
+    requests.request("POST",
+                     f'{tap_address}/run/plain',
+                     files={
+                         "trigger_id": trigger_id,
+                         "blob": blob
                      })
 
     return app.make_response('success')

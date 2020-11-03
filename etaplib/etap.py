@@ -91,13 +91,15 @@ def add_new_circuit(rule_id, circuit_id, F, D, description=None):
             'VALUES (?, ?)',
             (rule_id, description)
         )
-    print_db()
     _db.commit()
 
 
-def execute(rule_id, circuit_id, X):
+def execute(rule_id, circuit_id, X, test_mode=True):
     cur = _db.cursor()
-    row = cur.execute('SELECT * FROM circuit_pool WHERE rule_id = ? AND circuit_id = ?', (rule_id, circuit_id)).fetchone()
+    if test_mode:
+        row = cur.execute('SELECT * FROM circuit_pool WHERE rule_id = ?', (rule_id,)).fetchone()
+    else:
+        row = cur.execute('SELECT * FROM circuit_pool WHERE rule_id = ? AND circuit_id = ?', (rule_id, circuit_id)).fetchone()
 
     if row is None:
         raise ValueError(f'rule id {rule_id} with circuit id {circuit_id} does not exist.')
@@ -112,21 +114,24 @@ def execute(rule_id, circuit_id, X):
         raise ValueError(f'description for rule id {rule_id} does not exist.')
     description = row['description']
 
-    Y = _evaluate(F, X, description)
+    Y = _evaluate(rule_id, circuit_id, F, X, description)
 
 
     return Y, D
 
 
-def _evaluate(F: bytes, X: bytes, description: str):
-    Path('/tmp/table.txt').write_bytes(F)
-    Path('/tmp/input.txt').write_bytes(X)
-    Path('/tmp/description.txt').write_text(description)
+def _evaluate(rule_id: int, circuit_id: int, F: bytes, X: bytes, description: str):
+    Path(f'/tmp/{rule_id}/{circuit_id}').mkdir(parents=True, exist_ok=True)
+    Path(f'/tmp/{rule_id}/{circuit_id}/table.txt').write_bytes(F)
+    Path(f'/tmp/{rule_id}/{circuit_id}/input.txt').write_bytes(X)
+    Path(f'/tmp/{rule_id}/{circuit_id}/description.txt').write_text(description)
 
-    subprocess.run([_emp_tap_binary, '/tmp/description.txt', '/tmp/table.txt', '/tmp/input.txt', '/tmp/output.txt'],
-                   cwd='/tmp')
+    subprocess.run([_emp_tap_binary, f'/tmp/{rule_id}/{circuit_id}/description.txt',
+                    f'/tmp/{rule_id}/{circuit_id}/table.txt',
+                    f'/tmp/{rule_id}/{circuit_id}/input.txt',
+                    f'/tmp/{rule_id}/{circuit_id}/output.txt'], cwd=f'/tmp/{rule_id}/{circuit_id}')
 
-    Y = Path('/tmp/output.txt').read_bytes()
+    Y = Path(f'/tmp/{rule_id}/{circuit_id}/output.txt').read_bytes()
 
     return Y
 

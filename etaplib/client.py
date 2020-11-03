@@ -47,12 +47,14 @@ def setup(circuit_id: int, trigger_secret: bytes, action_secret: bytes, capture_
     e_r = hashlib.shake_128(trigger_secret + j + (1).to_bytes(1, byteorder='big')).digest(16)
     k = hashlib.shake_256(trigger_secret + j + (2).to_bytes(1, byteorder='big')).digest(32)
 
-    Path('/tmp/enc.txt').write_bytes(e_s + e_r)
-    p = subprocess.run([emp_client_binary, sys.argv[1], '/tmp/enc.txt', '/tmp/table.txt', '/tmp/dec.txt',
-                        '1' if capture_output_format else '0'], cwd='/tmp', capture_output=True)
+    Path(f'/tmp/{rule_id}').mkdir(parents=True, exist_ok=True)
+    Path(f'/tmp/{rule_id}/enc.txt').write_bytes(e_s + e_r)
+    p = subprocess.run([emp_client_binary, sys.argv[1], f'/tmp/{rule_id}/enc.txt', f'/tmp/{rule_id}/table.txt',
+                        f'/tmp/{rule_id}/dec.txt', '1' if capture_output_format else '0'], cwd=f'/tmp/{rule_id}',
+                       capture_output=True)
 
-    L = Path('/tmp/dec.txt').read_bytes()
-    F = Path('/tmp/table.txt').read_bytes()
+    L = Path(f'/tmp/{rule_id}/dec.txt').read_bytes()
+    F = Path(f'/tmp/{rule_id}/table.txt').read_bytes()
 
     L_0 = L[:16]
     L = L[16:]
@@ -121,5 +123,5 @@ print(output_format)
 
 requests.post(
     url=f'{ts_address}/trigger',
-    data=json.dumps({'id': rule_id, 'data': ['this one has http', 42]})
+    data=json.dumps({'test_mode': True, 'id': rule_id, 'data': ['this one has http', 42]})
 )

@@ -97,7 +97,7 @@ def add_new_secret(trigger_id, secret_key, formatter=None):
     _db.commit()
 
 
-def encode(trigger_id, data: List[Any], payload: bytes = None):
+def encode(trigger_id, data: List[Any], payload: bytes = None, test_mode=True):
     cur = _db.cursor()
     row = cur.execute('SELECT * FROM trigger_secret WHERE trigger_id = ?', (trigger_id,)).fetchone()
 
@@ -111,7 +111,10 @@ def encode(trigger_id, data: List[Any], payload: bytes = None):
     if row is not None:
         data = _format(data, row['formatter'])
 
-    _, X, ct = _encode(circuit_id, secret_key, data, payload)
+    if test_mode:
+        _, X, ct = _encode(0, secret_key, data, payload)
+    else:
+        _, X, ct = _encode(circuit_id, secret_key, data, payload)
 
     cur.execute('UPDATE trigger_secret SET circuit_id = circuit_id + 1 WHERE trigger_id = ?', (trigger_id,))
     _db.commit()

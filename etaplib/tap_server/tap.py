@@ -3,6 +3,7 @@ import json
 from flask import Flask, request
 import logging
 import requests
+from cryptography.fernet import Fernet
 
 import sys
 sys.path.insert(0, '/home/ychen459/etaplib')
@@ -55,6 +56,37 @@ def run():
                          "Y": Y,
                          "d": d,
                          "ct": ct
+                     })
+
+    return app.make_response('success')
+
+
+key = b'0FJ1Cx4TAA_TmAgWoKxx62aHLtzqr56KHvLiA71Kgpk='
+f = Fernet(key)
+
+@app.route('/run/plain', methods=['POST'])
+def run_plain():
+    rule_id = int(request.files.get('trigger_id').read())
+    blob = request.files.get('blob').read()
+
+    data = f.decrypt(blob)
+    data = json.loads(data.decode())
+
+    cur = etap._db.cursor()
+    row = cur.execute('SELECT * FROM rule_description WHERE rule_id = ?', (rule_id,)).fetchone()
+
+    if row is None:
+        raise ValueError(f'rule id {rule_id} does not exist.')
+
+    data = json.dumps(data).encode()
+    blob = f.encrypt(data)
+
+    #  send trigger data to tap
+    requests.request("POST",
+                     f'{as_address}/action/plain',
+                     files={
+                         "action_id": rule_id,
+                         "blob": blob
                      })
 
     return app.make_response('success')

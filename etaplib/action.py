@@ -100,7 +100,7 @@ def add_new_secret(action_id, secret_key, formatter=None):
     _db.commit()
 
 
-def decode(action_id, blobs: List[bytes]):
+def decode(action_id, blobs: List[bytes], format=False):
     cur = _db.cursor()
     row = cur.execute('SELECT * FROM action_secret WHERE action_id = ?', (action_id,)).fetchone()
 

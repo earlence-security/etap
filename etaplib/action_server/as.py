@@ -1,9 +1,10 @@
 import os
 import json
+import time
 
 from flask import Flask, request
 import logging
-import requests
+from cryptography.fernet import Fernet
 
 import sys
 
@@ -44,6 +45,24 @@ def action_func():
 
     y, payload = action.decode(action_id, [j, Y, ct, d])
 
+    print(action_id, y, time.time())
+
+    return app.make_response('success')
+
+
+key = b'0FJ1Cx4TAA_TmAgWoKxx62aHLtzqr56KHvLiA71Kgpk='
+f = Fernet(key)
+
+@app.route('/action/plain', methods=['POST'])
+def action_plain():
+
+    action_id = int(request.files.get('action_id').read())
+    blob = request.files.get('blob').read()
+
+    y = f.decrypt(blob)
+    y = json.loads(y.decode())
+
     print(y)
+    print(time.time())
 
     return app.make_response('success')

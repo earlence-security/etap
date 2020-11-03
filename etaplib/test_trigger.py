@@ -1,17 +1,13 @@
-import json
-import trigger
+import asyncio
+import aiohttp
 
-trigger.init()
 
-formatter = [{'type': 'int'}, {'type': 'str', 'length': 4}]
-formatter = json.dumps(formatter)
-
-trigger.add_new_secret(1, b'0' * 8, formatter)
-trigger.add_new_secret(1, b'1' * 8, formatter)
-
-blob = trigger.encode(1, [1, 2])
-
-trigger.print_db()
+async def main():
+    async with aiohttp.ClientSession() as session:
+        async with session.get('http://httpbin.org/get') as resp:
+            print(resp.status)
+            print(await resp.text())
 
 
 
+print(asyncio.iscoroutinefunction(main))
