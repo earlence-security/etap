@@ -3,10 +3,10 @@ x0 str 512
 c0 str $request
 c1 str source
 c2 str target
-
+c3 int 6
 
 i0 start_with x0 c0
-i1 lookup x0 c1 c2
+i1 lookup x0 c3 c3 c1 c2
 
 p i0
 y0 x0

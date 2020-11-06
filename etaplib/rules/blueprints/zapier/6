@@ -16,16 +16,25 @@ c5 str {{104261663__detail}}
 c6 str {{104261663__owner__name}}
 c7 str {{104261663__dueOn}}
 
+c8 int 25
+c9 int 26
+c10 int 31
+c11 int 30
+c12 int 21
+c13 int 26
+c14 int 20
+c15 int 32
+
 i0 contain x0 /home/ychen459/test_rules/rules/dfa_files/z.06
 // name
 
-i1 str x0 lookup c1 x1
-i2 str i1 lookup c2 x2
-i3 str i2 lookup c3 x3
-i4 str i3 lookup c4 x4
-i5 str i4 lookup c5 x5
-i6 str i5 lookup c6 x6
-i7 str i6 lookup c7 x7
+i1 str x0 lookup c8 c15 c1 x1
+i2 str i1 lookup c9 c15 c2 x2
+i3 str i2 lookup c10 c15 c3 x3
+i4 str i3 lookup c11 c15 c4 x4
+i5 str i4 lookup c12 c15 c5 x5
+i6 str i5 lookup c13 c15 c6 x6
+i7 str i6 lookup c14 c15 c7 x7
 
 p i0
 y0 i0

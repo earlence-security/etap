@@ -244,6 +244,10 @@ int main(int argc, char** argv) {
                 std::string k;
                 std::string v;
                 while (iss >> k >> v) {
+                    if (klen == 1 && k.compare("\\space") == 0) {
+                        k = string(" ");
+                    }
+
                     keys.emplace_back(get_string_labels(k, klen));
                     values.emplace_back(get_string_labels(v, vlen));
                 }
