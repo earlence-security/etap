@@ -1,0 +1,9 @@
+x0 str 512
+
+c0 str No Active Alerts
+
+i0 eq x0 c0
+i1 not i0
+
+p i1
+y0 x0

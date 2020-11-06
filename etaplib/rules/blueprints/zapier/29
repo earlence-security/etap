@@ -1,0 +1,11 @@
+x0 int
+x1 str 512
+
+c0 int 3600
+c1 bool 1
+
+i0 * x0 c0
+
+p 1
+y0 x1
+y1 i0

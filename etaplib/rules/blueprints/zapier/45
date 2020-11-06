@@ -1,0 +1,12 @@
+x0 str 512
+
+i0 contain x0 /home/ychen459/test_rules/rules/dfa_files/z.45.1
+// sold
+
+i1 contain x0 /home/ychen459/test_rules/rules/dfa_files/z.45.2
+// rented
+
+i2 or i0 i1
+
+p i2
+y0 x0

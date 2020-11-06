@@ -1,0 +1,10 @@
+x0 str 512
+x1 bool
+
+c0 str 50-closed
+
+i0 eq x0 c0
+i1 and x1 i0
+
+p i1
+y0 x0

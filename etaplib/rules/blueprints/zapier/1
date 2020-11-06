@@ -1,0 +1,7 @@
+x0 str 512
+
+i0 contain x0 /home/ychen459/test_rules/rules/dfa_files/z.01
+// sale
+
+p i0
+y0 x0

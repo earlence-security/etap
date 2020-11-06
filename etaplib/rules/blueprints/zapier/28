@@ -1,0 +1,9 @@
+x0 int
+x1 str 512
+
+c0 int 19
+
+i0 > x0 c0
+
+p i0
+y0 x1

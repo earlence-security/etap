@@ -1,0 +1,14 @@
+x0 str 32
+x1 str 512
+
+c0 str Seller
+
+c0 str USA
+c1 str test
+
+i0 eq x0 c0
+i1 lookup x1 c0 c1
+
+p i0
+y0 i1
+y0 x0

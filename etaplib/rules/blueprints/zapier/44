@@ -1,0 +1,9 @@
+x0 str 512
+x1 str 512
+
+c0 str \space
+c1 str target
+
+i0 x0 lookup c0 c1
+p x1
+y0 i0
