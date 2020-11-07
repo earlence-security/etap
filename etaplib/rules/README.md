@@ -86,7 +86,7 @@
 | 28 | > |
 | 29 | * |
 
-#### Exists
+#### Exists (Use eq)
 
 | Rule ID |
 | ------- |

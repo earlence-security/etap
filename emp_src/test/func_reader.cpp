@@ -203,6 +203,14 @@ int main(int argc, char** argv) {
             else if (op == "eq" || op == "start_with") {
                 std::string arg1, arg2;
                 iss >> arg1 >> arg2;
+                if (arg1.compare(string("\\empty")) == 0) {
+                    arg1 = string("");
+                }
+
+                if (arg2.compare(string("\\empty")) == 0) {
+                    arg2 = string("");
+                }
+
                 auto v1 = std::get<String>(get_variable(x, c, y, arg1));
                 auto v2 = std::get<String>(get_variable(x, c, y, arg2));
                 res = start_with(v1, v2);
