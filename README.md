@@ -15,7 +15,7 @@ For each party in the trigger-action system, we provide an example Python implem
 
 In addition, we provide a Python module [`etaplib`](etaplib/) that allows developers of trigger and action services to  upgrade their existing Flask API routes to be compatible with eTAP.
 
-Please refer to the `README` in the their own directories for detailed instructions on installation and usage.
+Please refer to the `README` in their own directories for detailed instructions on installation and usage.
 
 
 

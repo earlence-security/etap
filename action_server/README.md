@@ -16,4 +16,4 @@ Next, make sure that the `etaplib` Python Module is correctly built and is in th
 
 ## How to Run
 
-Please refer to the [run.sh](action_server/run.sh).
+Please refer to the [run.sh](run.sh).

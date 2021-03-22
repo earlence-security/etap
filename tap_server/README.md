@@ -10,7 +10,7 @@ First, install the following prerequisites:
 1. Python 3.8 or higher
 2. `aiohttp`, `requests`,`cryptography`, and `flask` Python packages
 
-Next, install the [EMP-toolkit](https://github.com/emp-toolkit) using the provided script [`script/install_emp-tool.sh`](../script/install_pybind11.sh). **Note**: we are using an old version of the EMP-toolkit and may be not compatible with the more recent versions.
+Next, install the [EMP-toolkit](https://github.com/emp-toolkit) using the provided script [`scripts/install_emp-tool.sh`](../scripts/install_pybind11.sh). **Note**: we are using an old version of the EMP-toolkit and may be not compatible with the more recent versions.
 
 
 ## Build Instruction
@@ -27,4 +27,4 @@ Next, make sure that the `etaplib` Python Module is correctly built and is in th
 
 ## How to Run
 
-Please refer to the [run.sh](tap_server/run.sh).
+Please refer to the [run.sh](run.sh).
