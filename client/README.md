@@ -27,6 +27,9 @@ Next, make sure that the `etaplib` Python Module is correctly built and is in th
 
 ## Usage
 
+```
+EMP_CLIENT_BINARY="../emp_src/bin/client" python3 ./client.py rule_desc_file trigger_data_file
+```
 
 
 ## TODO: add instruction to create rule description file

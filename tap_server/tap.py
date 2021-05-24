@@ -1,22 +1,21 @@
 import json
+import os
 
 from flask import Flask, request
 import logging
 import requests
 from cryptography.fernet import Fernet
 
-import sys
-sys.path.insert(0, '/home/ychen459/etaplib')
-as_address = 'http://127.0.0.1:5002'
-
 import etap
+
+as_address = 'http://127.0.0.1:5002'
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 
-etap.init('')
+etap.init(os.getenv('EMP_TAP_BINARY'))
 
 
 # Additional API to receive circuit encoding info from client

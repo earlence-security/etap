@@ -6,11 +6,10 @@ import logging
 import requests
 from cryptography.fernet import Fernet
 
-import sys
-sys.path.insert(0, '/home/ychen459/etaplib')
+import trigger
+
 tap_address = 'http://127.0.0.1:5001'
 
-import trigger
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')

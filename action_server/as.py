@@ -6,11 +6,6 @@ from flask import Flask, request
 import logging
 from cryptography.fernet import Fernet
 
-import sys
-
-sys.path.insert(0, '/home/ychen459/etaplib')
-tap_address = ''
-
 import action
 
 app = Flask(__name__)

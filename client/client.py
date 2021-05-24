@@ -4,6 +4,7 @@ import hashlib
 from pathlib import Path
 import sys
 import json
+import os
 
 from cryptography.fernet import Fernet
 import requests
@@ -13,7 +14,7 @@ import emp_utils
 ts_address = 'http://127.0.0.1:5000'
 as_address = 'http://127.0.0.1:5002'
 tap_address = 'http://127.0.0.1:5001'
-emp_client_binary = ''
+emp_client_binary = os.getenv('EMP_CLIENT_BINARY')
 
 
 def get_input_formatter(rule_description: str):
@@ -117,11 +118,9 @@ requests.post(
             }
         )
 
-print(input_format)
-print(output_format)
-
+trigger_data = json.loads(Path(sys.argv[2]).read_text())
 
 requests.post(
     url=f'{ts_address}/trigger',
-    data=json.dumps({'test_mode': True, 'id': rule_id, 'data': ['this one has http', 42]})
+    data=json.dumps({'test_mode': True, 'id': rule_id, 'data': trigger_data})
 )
