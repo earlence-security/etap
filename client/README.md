@@ -10,7 +10,7 @@ First, install the following prerequisites:
 1. Python 3.8 or higher
 2. `aiohttp`, `requests`,`cryptography`, and `flask` Python packages
 
-Next, install the [EMP-toolkit](https://github.com/emp-toolkit) using the provided script [`script/install_emp-tool.sh`](../scripts/install_pybind11.sh). **Note**: we are using an old version of the EMP-toolkit and may be not compatible with the more recent versions.
+Next, install the [EMP-toolkit](https://github.com/emp-toolkit) using the provided script [`scripts/install_emp-tool.sh`](../scripts/install_pybind11.sh). **Note**: we are using an old version of the EMP-toolkit and may be not compatible with the more recent versions.
 
 
 ## Build Instruction
@@ -24,5 +24,9 @@ make
 ```
 
 Next, make sure that the `etaplib` Python Module is correctly built and is in the Python import path. Please refer to the `README` in the [etaplib](../etaplib/) directory for detailed instructions.
+
+## Usage
+
+
 
 ## TODO: add instruction to create rule description file

@@ -1,9 +1,0 @@
-x0 str 512
-
-c0 bool 1
-
-i0 split x0 0 /home/ychen459/test_rules/rules/dfa_files/z.12
-// space
-
-p c0
-y0 x0

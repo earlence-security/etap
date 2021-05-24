@@ -1,9 +1,0 @@
-x0 str 512
-
-i0 split x0 0 /home/ychen459/test_rules/rules/dfa_files/z.05
-// .
-i1 split x0 1 /home/ychen459/test_rules/rules/dfa_files/z.05
-
-p i0
-y0 i0
-y1 i1

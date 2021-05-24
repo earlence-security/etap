@@ -1,8 +1,0 @@
-x0 str 512
-
-c0 str True
-
-i0 eq x0 c0
-
-p i0
-y0 x0

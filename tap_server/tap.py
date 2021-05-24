@@ -16,7 +16,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 
-etap.init('/tmp/tmp.MiQois5BcC/cmake-build-debug/bin/tap')
+etap.init('')
 
 
 # Additional API to receive circuit encoding info from client

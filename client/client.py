@@ -13,7 +13,7 @@ import emp_utils
 ts_address = 'http://127.0.0.1:5000'
 as_address = 'http://127.0.0.1:5002'
 tap_address = 'http://127.0.0.1:5001'
-emp_client_binary = '/tmp/tmp.MiQois5BcC/cmake-build-debug/bin/client'
+emp_client_binary = ''
 
 
 def get_input_formatter(rule_description: str):

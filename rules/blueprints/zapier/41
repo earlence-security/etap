@@ -1,6 +1,0 @@
-x0 str 512
-x1 bool
-
-i0 not x1
-p i0
-y0 x0
