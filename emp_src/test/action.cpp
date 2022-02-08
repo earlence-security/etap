@@ -1,4 +1,4 @@
-#include "emp-sh2pc/emp-sh2pc.h"
+#include <emp-tool/emp-tool.h>
 #include "action_prot.h"
 #include <new>
 #include <utils.h>

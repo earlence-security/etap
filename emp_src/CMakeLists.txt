@@ -8,12 +8,12 @@ include(${CMAKE_FOLDER}/cmake/common.cmake)
 include(${CMAKE_FOLDER}/cmake/source_of_randomness.cmake)
 include(${CMAKE_FOLDER}/cmake/threading.cmake)
 
-find_package(emp-ot REQUIRED)
-include_directories(${EMP-OT_INCLUDE_DIRS})
+find_package(emp-tool REQUIRED)
+include_directories(${EMP-TOOL_INCLUDE_DIRS})
 
 # Test cases
 macro (add_test _name)
-    add_test_with_lib(${_name} ${EMP-OT_LIBRARIES})
+    add_test_with_lib(${_name} ${EMP-TOOL_LIBRARIES})
 endmacro()
 
 add_test (client)

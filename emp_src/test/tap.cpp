@@ -1,6 +1,6 @@
 #include <new>
 
-#include "emp-sh2pc/emp-sh2pc.h"
+#include <emp-tool/emp-tool.h>
 #include "cloud_prot.h"
 
 #include "dfa.h"
