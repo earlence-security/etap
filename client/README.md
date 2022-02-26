@@ -71,6 +71,8 @@ lookup [arg1] [key_len] [val_len] [key1] [val1] [key2] [val2] ...
 
 We provide a Java helper file `ExampleRuleDFA.java` that shows how to generate the DFA files for rules listed in Fig 9.
 
+This helper file relies on [dk.brics.automaton](https://mvnrepository.com/artifact/dk.brics/automaton) and [reverse-regex-util](https://mvnrepository.com/artifact/com.vladsch.reverse-regex/reverse-regex-util) to convert regular expressions to DFA.
+
 
 ### Trigger data file format
 
